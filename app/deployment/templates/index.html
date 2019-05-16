@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Movie Recommendations</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap.min.css') }}" media="screen">
+<!--     <link rel="stylesheet" href="../_assets/css/custom.min.css"> -->
+  </head>
+    
+  <body>
+      
+    <div class="navbar navbar-expand-lg fixed-top navbar-dark bg-primary">
+      <div class="container">
+        <a href="../" class="navbar-brand">Movie Recommendations</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+      </div>
+    </div>
+
+
+      <div class="container">
+
+      <div class="page-header" id="banner">
+        <div class="row">
+          <div class="col-lg-8 col-md-7 col-sm-6">
+            <h1>Darkly</h1>
+            <p class="lead"></p>
+          </div>
+          <div class="col-lg-4 col-md-5 col-sm-6">
+            <div class="sponsor">
+<!--               <script async type="text/javascript" src="//cdn.carbonads.com/carbon.js?serve=CKYIE23N&placement=bootswatchcom" id="_carbonads_js"></script> -->
+            </div>
+          </div>
+        </div>
+      </div>
+              
+          
+    <div class="container">
+
+        <div class="bs-docs-section" style="margin-top: 10%;">
+        <div class="row">
+          <div class="col-lg-11">
+            <div class="bs-component">
+              <div class="jumbotron">
+                <h1 class="display-16">Get Recommendations</h1>
+
+             <div class="row">
+              <div class="col-lg-6">
+              <div class="bs-component">
+              <form>
+                <fieldset>
+                  <div class="form-group row">
+                   <label for="staticUser" class="col-sm-2 col-form-label">User</label>
+                    <div class="col-sm-10">
+                      <input type="text" id="user_id" 
+                             value="1">
+                    </div>
+                    <label for="staticTopK" class="col-sm-2 col-form-label">Top K</label>
+                    <div class="col-sm-10">
+                      <input type="text" id="topk" 
+                             value="10">
+                    </div>
+                  </div>
+                  <button type="submit" class="btn btn-primary">Submit</button>
+                </fieldset>
+              </form>
+              </div>
+              </div>
+            </div>      
+                  
+                  
+                  
+              </div>
+            </div>
+          </div>
+        </div>
+          
+            
+            
+            
+        <div class="bs-docs-section" style="margin-top: 10%;">
+        <div class="row">
+          <div class="col-lg-11">
+            <div class="bs-component">
+              <div class="jumbotron">
+                <h1 class="display-16">Predict Ratings</h1>
+<!--                   <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSv97t4gRYf3IdmLgm6l9DTgvs4n17P4Q6bn-OaNBWU4r9mKduL" alt="popcorn"> -->
+                  
+                      <div class="row">
+                      <div class="col-lg-6">
+                      <div class="bs-component">
+                      <form>
+                        <fieldset>
+                          <div class="form-group row">
+                            <label for="staticUser" class="col-sm-2 col-form-label">User</label>
+                            <div class="col-sm-10">
+                              <input type="text" id="user_id" 
+                                     value="1">
+                            </div>
+                            <label for="staticMovie" class="col-sm-2 col-form-label">Movie</label>
+                            <div class="col-sm-10">
+                              <input type="text" id="movie_id" 
+                                     value="622">
+                            </div>
+                          </div>
+                          <button type="submit" class="btn btn-primary">Submit</button>
+                        </fieldset>
+                      </form>
+                      </div>
+                      </div>
+                    </div>                  
+                  
+                
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+
+
+
+ 
+ 
+      <footer id="footer">
+        <div class="row">
+          <div class="col-lg-12">
+
+            <ul class="list-unstyled">
+              <li class="float-lg-right"><a href="#top">Back to top</a></li>
+            </ul>
+            <p>Project Participants: <a href="https://delphiancalamity.github.io/">Calliope Kostopoulou</a> , Antonis Mandamadiotis, Nikolaos Naoum</p>
+            <p>Code implemented for the course of  <a href="http://cgi.di.uoa.gr/~antoulas/m111/?fbclid=IwAR3RbfMDYdos2jmHOrKDWEl4RkhCR903F0g7sYhqoTUjwfK2I_C54ur7YW4">Big Data Management</a></p>
+             <p>Github Repository:  <a href="#"> Movies Recommendation Systems</a></p>
+
+          </div>
+          </div>
+        </div>
+
+      </footer>
+
+
+    </div>
+
+  </body>
+</html>
+
