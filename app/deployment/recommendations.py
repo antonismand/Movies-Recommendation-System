@@ -7,10 +7,10 @@ model = "MF-WALS"
 
 LOCAL_MODEL_PATH = './saved-model/' + model
 
-ROW_MODEL_FILE = '/row.npy'
-COL_MODEL_FILE = '/col.npy'
-USER_MODEL_FILE = '/user.npy'
-ITEM_MODEL_FILE = '/item.npy'
+ROW_MODEL_FILE = 'row.npy'
+COL_MODEL_FILE = 'col.npy'
+USER_MODEL_FILE = 'user.npy'
+ITEM_MODEL_FILE = 'item.npy'
 
 USER_ITEM_DATA_FILE = "./dataset/ratings.csv"
 
@@ -23,15 +23,17 @@ class Recommendations(object):
     def _load_model(self, local_model_path):
 
         # load npy arrays for user/item factors and user/item maps
-        self.user_factor = np.load(os.path.join(local_model_path, ROW_MODEL_FILE))
-        self.item_factor = np.load(os.path.join(local_model_path, COL_MODEL_FILE))
-        self.user_map = np.load(os.path.join(local_model_path, USER_MODEL_FILE))
-        self.item_map = np.load(os.path.join(local_model_path, ITEM_MODEL_FILE))
+#         self.user_factor = np.load(os.path.join(local_model_path, ROW_MODEL_FILE),allow_pickle=True)
+#         self.item_factor = np.load(os.path.join(local_model_path, COL_MODEL_FILE),allow_pickle=True)
+#         self.user_map = np.load(os.path.join(local_model_path, USER_MODEL_FILE),allow_pickle=True)
+#         self.item_map = np.load(os.path.join(local_model_path, ITEM_MODEL_FILE),allow_pickle=True)
 
         logging.info('Finished loading arrays.')
 
         # load user_item history into pandas dataframe
-        views_df = pd.read_csv(USER_ITEM_DATA_FILE, sep=',', header=None, skiprows=1)
+        headers = ['userId', 'movieId', 'rating', 'timestamp']
+        views_df = pd.read_csv(USER_ITEM_DATA_FILE, sep=',', 
+                               names=headers, header=None, skiprows = 1)
         self.user_items = views_df.groupby('userId')
 
         logging.info('Finished loading model.')
@@ -48,7 +50,7 @@ class Recommendations(object):
             # generate list of recommended movie indexes from model
             recommendations = generate_recommendations(user_idx, already_rated_idx,
                                                  self.user_factor, self.item_factor, num_recs)
-    return  [self.item_map[i] for i in recommendations]
+        return  [self.item_map[i] for i in recommendations]
 
 
     def get_prediction(self, user_id, movie_id):
@@ -59,7 +61,7 @@ class Recommendations(object):
             movie_idx = np.searchsorted(self.item_map, movie_id)
             rating = generate_rating(user_idx, movie_idx, self.user_factor, self.item_factor)
 
-    return rating
+        return rating
 
 
 def generate_recommendations(user_idx, user_rated, row_factor, col_factor, k):

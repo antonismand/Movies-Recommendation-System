@@ -14,8 +14,8 @@ def index():
 @app.route('/recommendation', methods=['GET'])
 def recommendation():
     """Given a user id, return a list of recommended movie ids."""
-    user_id = request.args.get('userId')
-    num_recs = request.args.get('numRecs')
+    user_id = request.args.get('UserId')
+    num_recs = request.args.get('NumRecs')
 
     # validate args
     if user_id is None:
