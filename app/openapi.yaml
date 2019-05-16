@@ -1,0 +1,33 @@
+
+swagger: "2.0"
+info:
+  title: "Recommendations"
+  description: "Get recommended items for a User given their ID."
+  version: "1.0.0"
+# This field will be replaced by the deploy_api.sh script.
+host: "YOUR-PROJECT-ID.appspot.com"
+schemes:
+  - "https"
+paths:
+  "/recommendation":
+    get:
+      description: "Get recommended items for a User given their ID."
+      operationId: "recommendation"
+      parameters:
+        -
+          name: userId
+          in: query
+          required: true
+          type: integer
+        -
+          name: numRecs
+          in: query
+          required: false
+          type: integer
+      responses:
+        200:
+          description: "Success."
+          schema:
+            type: string
+        400:
+          description: "The User Id is not found or missing."
