@@ -8,7 +8,7 @@ rec_util = Recommendations()
 DEFAULT_RECS = 5
 
 @app.route('/')
-def hello_world():
+def index():
     return render_template('index.html')
 
 @app.route('/recommendation', methods=['GET'])
@@ -28,13 +28,40 @@ def recommendation():
     except:
         return 'User id and number of recs arguments must be integers.', 400
 
-    # get recommended movies
-#     rec_list = rec_util.get_recommendations(uid_int, nrecs_int)
+    # Get recommended movies
+    rec_list = rec_util.get_recommendations(uid_int, nrecs_int)
 
     if rec_list is None:
         return 'User Id not found : %s' % user_id, 400
 
     json_response = jsonify({'movies': [str(i) for i in rec_list]})
+    return json_response, 200
+
+
+@app.route('/prediction', methods=['GET'])
+def prediction():
+    """Given a user id and a movie id, return a rating """
+    user_id = request.args.get('userId')
+    movie_id = request.args.get('movieId')
+
+    # validate args
+    if user_id is None:
+        return 'No User Id provided.', 400
+    if movie_id is None:
+        return 'No Movie Id provided.', 400
+    try:
+        uid_int = int(user_id)
+        mid_int = int(movie_id)
+    except:
+        return 'User id and movie id arguments must be integers.', 400
+
+    # Get predicted rating
+    rating = rec_util.get_predictions(uid_int, mid_int)
+
+    if rating is None:
+        return 'User Id or Movie Id not found : %s' % user_id, 400
+
+    json_response = jsonify({'rating': [str(rating)]})
     return json_response, 200
 
 
