@@ -41,8 +41,8 @@ def recommendation():
 @app.route('/prediction', methods=['GET'])
 def prediction():
     """Given a user id and a movie id, return a rating """
-    user_id = request.args.get('userId')
-    movie_id = request.args.get('movieId')
+    user_id = request.args.get('UserId')
+    movie_id = request.args.get('MovieId')
 
     # validate args
     if user_id is None:
