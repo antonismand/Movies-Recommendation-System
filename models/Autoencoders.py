@@ -11,10 +11,9 @@ import pickle
 
 
 # Computes mae in batches so that we don't have memory issue in big dataset
-def compute_MAE(sess, train_sparse, output_layer):
+def compute_MAE(sess, train_sparse, output_layer, bsize):
 
     loss_mae = 0
-    bsize=100
     tot_users = train_sparse.shape[0]
     train_sparse = train_sparse.tocsr()
     # print(tot_users)
@@ -35,10 +34,9 @@ def compute_MAE(sess, train_sparse, output_layer):
     return mae
 
 
-def compute_RMSE(sess, train_sparse, output_layer):
+def compute_RMSE(sess, train_sparse, output_layer, bsize):
 
     loss_rmse = 0
-    bsize=100
     tot_users = train_sparse.shape[0]
     train_sparse = train_sparse.tocsr()
     # print(tot_users)
@@ -179,7 +177,7 @@ writer = tf.summary.FileWriter('./graphs', tf.get_default_graph())
 writer.close()
 sess.run(init)
 
-batch_size = 100
+batch_size = 32
 hm_epochs = 1
 tot_users = train_sparse.shape[0]
 # print(tot_users)
@@ -196,19 +194,19 @@ for epoch in range(hm_epochs):
         epoch_loss += c
   
     if (epoch+1) % 2 == 0:
-        print('MAE train', compute_MAE(sess, train_sparse, output_layer), 
-            'MAE test', compute_MAE(sess, test_sparse, output_layer))
+        print('MAE train', compute_MAE(sess, train_sparse, output_layer, batch_size), 
+            'MAE test', compute_MAE(sess, test_sparse, output_layer, batch_size))
         
-        print('RMSE train', np.sqrt(compute_RMSE(sess, train_sparse, output_layer)), 
-            'RMSE test', np.sqrt(compute_RMSE(sess, test_sparse, output_layer)))
+        print('RMSE train', np.sqrt(compute_RMSE(sess, train_sparse, output_layer, batch_size)), 
+            'RMSE test', np.sqrt(compute_RMSE(sess, test_sparse, output_layer, batch_size)))
 
         save_weights(sess, hidden_1_layer_vals, output_layer_vals)
 
-print('MAE train', compute_MAE(sess, train_sparse, output_layer), 
-    'MAE test', compute_MAE(sess, test_sparse, output_layer))
+print('MAE train', compute_MAE(sess, train_sparse, output_layer, batch_size), 
+    'MAE test', compute_MAE(sess, test_sparse, output_layer, batch_size))
 
-print('RMSE train', np.sqrt(compute_RMSE(sess, train_sparse, output_layer)), 
-    'RMSE test', np.sqrt(compute_RMSE(sess, test_sparse, output_layer)))
+print('RMSE train', np.sqrt(compute_RMSE(sess, train_sparse, output_layer, batch_size)), 
+    'RMSE test', np.sqrt(compute_RMSE(sess, test_sparse, output_layer, batch_size)))
 
 print('Epoch', epoch, '/', hm_epochs, 'loss:',epoch_loss)
 save_weights(sess, hidden_1_layer_vals, output_layer_vals)
