@@ -1,6 +1,7 @@
 import tensorflow as tf
 import pandas as pd
 import numpy as np
+import os as os
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error as MSE
@@ -12,70 +13,70 @@ import pickle
 # Computes mae in batches so that we don't have memory issue in big dataset
 def compute_MAE(sess, train_sparse, output_layer):
 
-	loss_mae = 0
-	bsize=100
-	tot_users = train_sparse.shape[0]
-	train_sparse = train_sparse.tocsr()
-	# print(tot_users)
+    loss_mae = 0
+    bsize=100
+    tot_users = train_sparse.shape[0]
+    train_sparse = train_sparse.tocsr()
+    # print(tot_users)
 
-	for i in range(int(tot_users/bsize)+1):
+    for i in range(int(tot_users/bsize)+1):
 
-		to = (i+1)*bsize
-		if to > tot_users:
-			to = tot_users
-			
-		epoch_x = train_sparse[ i*bsize : to ]
-		epoch_x = epoch_x.toarray()
+        to = (i+1)*bsize
+        if to > tot_users:
+            to = tot_users
+            
+        epoch_x = train_sparse[ i*bsize : to ]
+        epoch_x = epoch_x.toarray()
 
-		output_train = sess.run(output_layer, feed_dict={input_layer:epoch_x})
-		loss_mae += np.sum(abs(output_train - epoch_x))
+        output_train = sess.run(output_layer, feed_dict={input_layer:epoch_x})
+        loss_mae += np.sum(abs(output_train - epoch_x))
 
-	mae = loss_mae / (train_sparse.shape[0]*train_sparse.shape[1])
-	return mae
+    mae = loss_mae / (train_sparse.shape[0]*train_sparse.shape[1])
+    return mae
 
 
 def compute_RMSE(sess, train_sparse, output_layer):
 
-	loss_rmse = 0
-	bsize=100
-	tot_users = train_sparse.shape[0]
-	train_sparse = train_sparse.tocsr()
-	# print(tot_users)
+    loss_rmse = 0
+    bsize=100
+    tot_users = train_sparse.shape[0]
+    train_sparse = train_sparse.tocsr()
+    # print(tot_users)
 
-	for i in range(int(tot_users/bsize)+1):
+    for i in range(int(tot_users/bsize)+1):
 
-		to = (i+1)*bsize
-		if to > tot_users:
-			to = tot_users
-			
-		epoch_x = train_sparse[ i*bsize : to ]
-		epoch_x = epoch_x.toarray()
+        to = (i+1)*bsize
+        if to > tot_users:
+            to = tot_users
+            
+        epoch_x = train_sparse[ i*bsize : to ]
+        epoch_x = epoch_x.toarray()
 
-		output_train = sess.run(output_layer, feed_dict={input_layer:epoch_x})
-		loss_rmse += np.sum(np.square(output_train - epoch_x))
+        output_train = sess.run(output_layer, feed_dict={input_layer:epoch_x})
+        loss_rmse += np.sum(np.square(output_train - epoch_x))
 
-	rmse = loss_rmse / (train_sparse.shape[0]*train_sparse.shape[1])
-	return rmse
+    rmse = loss_rmse / (train_sparse.shape[0]*train_sparse.shape[1])
+    return rmse
 
 
 def save_weights(sess, hidden_vals, output_vals):
 
-	v1 = sess.run(hidden_vals)
-	f = open("weights-hidden.pkl","wb")
-	pickle.dump(v1,f)
-	f.close()
+    v1 = sess.run(hidden_vals)
+    f = open("weights-hidden.pkl","wb")
+    pickle.dump(v1,f)
+    f.close()
 
-	v2 = sess.run(output_vals)
-	f = open("weights-output.pkl","wb")
-	pickle.dump(v2,f)
-	f.close()
+    v2 = sess.run(output_vals)
+    f = open("weights-output.pkl","wb")
+    pickle.dump(v2,f)
+    f.close()
 
 ###############################################################################################
 # Reading the ratings data
 ratings_df = pd.read_csv('../datasets/ml-latest/ratings.csv', sep=",")
 
 # Making the dataset a little bit smaller due to lack of memory resources
-ratings_df = ratings_df.head(len(ratings_df))
+# ratings_df = ratings_df.head(len(ratings_df))
 # print(ratings_df)
 
 # Preprocessing
@@ -124,17 +125,31 @@ test_sparse = coo_matrix((rating_test, (user_test, movie_test)), shape=(n_users,
 # print(test_sparse.shape)
 
 
+
 # Deciding how many nodes each layer should have - Depending on the dataset's size
-movies_size = 53889 #28267 #9724 #28267 #58099
+movies_size = 53889     #9724  
 n_nodes_inpl = movies_size
 n_nodes_hl1  = 256
 n_nodes_outl = movies_size
 
 # with tf.device('/cpu:0'):
 
-# first hidden layer has 15159*256 weights and 256 biases
-hidden_1_layer_vals = {'weights':tf.Variable(tf.random_normal([n_nodes_inpl+1, n_nodes_hl1]))}
-output_layer_vals = {'weights':tf.Variable(tf.random_normal([n_nodes_hl1+1, n_nodes_outl]))}
+# Initialize them randomly or use pre-computed ones
+if os.path.isfile('weights-hidden.pkl'):
+    weights_hidden = np.load("weights-hidden.pkl","wb", allow_pickle=True)
+    # print(weights_hidden['weights'])
+    hidden_1_layer_vals = {'weights':tf.Variable(weights_hidden['weights'])}
+else:
+    hidden_1_layer_vals = {'weights':tf.Variable(tf.random_normal([n_nodes_inpl+1, n_nodes_hl1]))}    
+
+if os.path.isfile('weights-output.pkl'):
+    weights_output = np.load("weights-output.pkl","wb", allow_pickle=True)
+    # print(weights_output['weights'])
+    output_layer_vals = {'weights':tf.Variable(weights_output['weights'])}
+else:
+    output_layer_vals = {'weights':tf.Variable(tf.random_normal([n_nodes_hl1+1, n_nodes_outl]))}
+
+
 
 input_layer = tf.placeholder('float', [None, movies_size])
 
@@ -170,21 +185,33 @@ tot_users = train_sparse.shape[0]
 # print(tot_users)
 
 train_sparse = train_sparse.tocsr()
-for epoch in range(hm_epochs):
-	epoch_loss = 0
-	for i in range(int(tot_users/batch_size)):
-		epoch_x = train_sparse[ i*batch_size : (i+1)*batch_size ]
-		epoch_x = epoch_x.toarray()
-		_, c = sess.run([optimizer, meansq],feed_dict={input_layer: epoch_x, output_true: epoch_x})
-		epoch_loss += c
-  
-	print((epoch+1)%10)
-	if (epoch+1) % 10 == 0:
-		print('MAE train', compute_MAE(sess, train_sparse, output_layer))
-		print('MSE train', np.sqrt(compute_RMSE(sess, train_sparse, output_layer)))
+test_sparse = test_sparse.tocsr()
 
-print('MAE train', compute_MAE(sess, train_sparse, output_layer))
-print('MSE train', np.sqrt(compute_RMSE(sess, train_sparse, output_layer)))
+for epoch in range(hm_epochs):
+    epoch_loss = 0
+    for i in range(int(tot_users/batch_size)):
+        epoch_x = train_sparse[ i*batch_size : (i+1)*batch_size ]
+        epoch_x = epoch_x.toarray()
+        _, c = sess.run([optimizer, meansq],feed_dict={input_layer: epoch_x, output_true: epoch_x})
+        epoch_loss += c
+  
+    if (epoch+1) % 2 == 0:
+        print('MAE train', compute_MAE(sess, train_sparse, output_layer), 
+            'MAE test', compute_MAE(sess, test_sparse, output_layer))
+        
+        print('RMSE train', np.sqrt(compute_RMSE(sess, train_sparse, output_layer)), 
+            'RMSE test', np.sqrt(compute_RMSE(sess, test_sparse, output_layer)))
+
+        save_weights(sess, hidden_1_layer_vals, output_layer_vals)
+
+print('MAE train', compute_MAE(sess, train_sparse, output_layer), 
+    'MAE test', compute_MAE(sess, test_sparse, output_layer))
+
+print('RMSE train', np.sqrt(compute_RMSE(sess, train_sparse, output_layer)), 
+    'RMSE test', np.sqrt(compute_RMSE(sess, test_sparse, output_layer)))
+
 print('Epoch', epoch, '/', hm_epochs, 'loss:',epoch_loss)
+save_weights(sess, hidden_1_layer_vals, output_layer_vals)
+
 
 ###############################################################################################
