@@ -15,6 +15,7 @@ USER_MODEL_FILE = 'user.npy'
 ITEM_MODEL_FILE = 'movie.npy'
 MOVIES_ID_FILE = 'movie_ids.npy'
 USER_ITEM_DATA_FILE = "./dataset/u.data"
+USER_ITEM_DATA_FILE = "./dataset/u1.test"
 ITEM_DATA_FILE = "./dataset/u.item"
 POSTERS_DATA_FILE = "./dataset/movie_posters/movie_poster.csv"
 
