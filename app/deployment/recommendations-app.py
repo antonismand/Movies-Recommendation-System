@@ -2,6 +2,7 @@
 
 from flask import Flask, jsonify, request, render_template
 from recommendations import Recommendations
+import json
 
 app = Flask(__name__)
 rec_util = Recommendations()
@@ -15,7 +16,7 @@ def index():
 def recommendation():
     """Given a user id, return a list of recommended movie ids."""
     user_id = request.args.get('UserId')
-    num_recs = request.args.get('NumRecs')
+    num_recs = request.args.get('NumRec')
 
     # validate args
     if user_id is None:
@@ -34,8 +35,9 @@ def recommendation():
     if rec_list is None:
         return 'User Id not found : %s' % user_id, 400
 
-    json_response = jsonify({'movies': [str(i) for i in rec_list]})
-    return json_response, 200
+#     json_response = jsonify({'movies': [str(i) for i in rec_list]})
+    return render_template("index.html", movies=rec_list)
+
 
 
 @app.route('/prediction', methods=['GET'])
@@ -56,13 +58,12 @@ def prediction():
         return 'User id and movie id arguments must be integers.', 400
 
     # Get predicted rating
-    rating = rec_util.get_predictions(uid_int, mid_int)
+    rating = rec_util.get_prediction(uid_int, mid_int)
 
     if rating is None:
         return 'User Id or Movie Id not found : %s' % user_id, 400
 
-    json_response = jsonify({'rating': [str(rating)]})
-    return json_response, 200
+    return render_template("index.html", rating=rating)
 
 
 @app.route('/readiness_check', methods=['GET'])

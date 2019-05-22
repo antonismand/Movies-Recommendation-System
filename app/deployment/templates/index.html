@@ -17,9 +17,10 @@
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
+
       </div>
     </div>
-
+      
 
       <div class="container">
 
@@ -52,27 +53,28 @@
                   
               <form action="/recommendation" method="GET">
                 <fieldset>
-                    
-                    
                 <div class="form-group row">
                    <label for="staticUserId" class="col-sm-2 col-form-label">User</label>
                     <div class="col-sm-10">
-                      <input type="text" name="UserId" id="UserId" value="1">
+                      <input type="text" name="UserId" id="UserId" value="253">
                     </div>
                 </div>
                       
                   <div class="form-group row">
                     <label for="staticNumRecs" class="col-sm-2 col-form-label">Top K</label>
                     <div class="col-sm-10">
-                      <input type="text" name="NumRec" id="NumRecs" value="10">
+                      <input type="text" name="NumRec" id="NumRecs" value="5">
                     </div>
                   </div>
-                                            
                   <button type="submit" value="Submit" class="btn btn-primary">Submit</button>
                 </fieldset>
               </form>
-                  
+              
+              <br> <br>
+                      
               </div>
+                                   
+                  
               </div>
             </div>   
                             
@@ -80,6 +82,22 @@
             </div>
             </div>
           </div>
+                    <div class="container">
+                    {% block content %}
+                    {% for movie in movies: %}
+                    <font size="6">{{ movie[0][0] }}</font>
+                        <br>
+                        {% if movie[1][0] == "E"%}
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT-E7iDNv7uVK7P0N60LpP5Si1knyvQI-yERwMa1jkiwIWX2BEmKg" alt="No Picture Available" height="410" width="300">
+                        {% else %}
+                    <img src= {{ movie[1][0]}} alt="No Picture Available" height="410" width="300">
+                        {% endif %}
+                    
+                    <br> <br>
+                    {% endfor %}
+                {% endblock %}
+                  </div>
+                  
         </div>
         </div>
           
@@ -104,14 +122,14 @@
                 <div class="form-group row">
                    <label for="staticUserId" class="col-sm-2 col-form-label">User</label>
                     <div class="col-sm-10">
-                      <input type="text" name="UserId" id="UserId2" value="1">
+                      <input type="text" name="UserId" id="UserId2" value="253">
                     </div>
                 </div>
                       
                   <div class="form-group row">
                     <label for="staticMovie" class="col-sm-2 col-form-label">Movie</label>
                     <div class="col-sm-10">
-                      <input type="text" name="MovieId"  id="Movie" value="660">
+                      <input type="text" name="MovieId"  id="Movie" value="465">
                     </div>
                   </div>
                                             
@@ -127,6 +145,18 @@
             </div>
             </div>
           </div>
+            
+                <div class="container">
+                    {% block content1 %}
+                        {% if rating %}
+                        <font size="6">Rating: {{ rating }}/5</font>
+                        <br> <br>
+                        {% endif %}
+                    {% endblock %}
+                  </div>
+                  
+            
+            
         </div>
         </div>
           

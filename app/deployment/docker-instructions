@@ -1,0 +1,8 @@
+
+sudo docker rm recommendations-app
+
+sudo docker build -t recommendations-app .
+
+sudo docker run --name "recommendations-app" -p 8080:8080 -v /home/user/jupyter-notebook/Tensorflow-Projects/Movies-Recommendation-System/datasets:/app/dataset recommendations-app &
+
+sudo docker exec -it recommendations-app /bin/bash
