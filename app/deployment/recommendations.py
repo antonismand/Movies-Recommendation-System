@@ -14,7 +14,7 @@ COL_MODEL_FILE = 'col.npy'
 USER_MODEL_FILE = 'user.npy'
 ITEM_MODEL_FILE = 'movie.npy'
 MOVIES_ID_FILE = 'movie_ids.npy'
-USER_ITEM_DATA_FILE = "./dataset/u.data"
+#USER_ITEM_DATA_FILE = "./dataset/u.data"
 USER_ITEM_DATA_FILE = "./dataset/u1.test"
 ITEM_DATA_FILE = "./dataset/u.item"
 POSTERS_DATA_FILE = "./dataset/movie_posters/movie_poster.csv"
@@ -97,7 +97,18 @@ class Recommendations(object):
         # movie_idx = self.movies_id_map[movie_id]
         rating = self.generate_prediction(user_idx, movie_id-1, self.user_factor, self.item_factor)
 
-        return rating
+        # get already viewed items from views dataframe
+        user_group = self.user_items.get_group(user_id)
+        past_movies = user_group.movieId
+        past_ratings = user_group.rating
+        
+        actual_rating = 0
+        for (m, r) in zip(past_movies, past_ratings):
+            if m == movie_id:
+                actual_rating = r
+                break
+
+        return rating, actual_rating
 
 
     def generate_recommendations(self, user_idx, user_rated, row_factor, col_factor, k):

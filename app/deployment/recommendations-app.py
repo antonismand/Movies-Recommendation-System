@@ -58,12 +58,12 @@ def prediction():
         return 'User id and movie id arguments must be integers.', 400
 
     # Get predicted rating
-    rating = rec_util.get_prediction(uid_int, mid_int)
+    rating, actual_rating = rec_util.get_prediction(uid_int, mid_int)
 
     if rating is None:
         return 'User Id or Movie Id not found : %s' % user_id, 400
 
-    return render_template("index.html", rating=rating)
+    return render_template("index.html", rating=rating, actual_rating=actual_rating)
 
 
 @app.route('/readiness_check', methods=['GET'])
